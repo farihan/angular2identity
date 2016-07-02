@@ -16,7 +16,7 @@ namespace Hans.Angular2Identity.Migrations
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Hans.Angular2Identity.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Hans.Angular2Identity.Infrastructure.Domains.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
 
@@ -181,7 +181,7 @@ namespace Hans.Angular2Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Hans.Angular2Identity.Models.ApplicationUser")
+                    b.HasOne("Hans.Angular2Identity.Infrastructure.Domains.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -189,7 +189,7 @@ namespace Hans.Angular2Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Hans.Angular2Identity.Models.ApplicationUser")
+                    b.HasOne("Hans.Angular2Identity.Infrastructure.Domains.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -202,7 +202,7 @@ namespace Hans.Angular2Identity.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Hans.Angular2Identity.Models.ApplicationUser")
+                    b.HasOne("Hans.Angular2Identity.Infrastructure.Domains.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Hans.Angular2Identity.Models;
+using Hans.Angular2Identity.Infrastructure.Domains;
 
 namespace Hans.Angular2Identity.Infrastructure
 {

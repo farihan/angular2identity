@@ -10,6 +10,7 @@ using Hans.Angular2Identity.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using Hans.Angular2Identity.Models.AccountViewModels;
 using Hans.Angular2Identity.Infrastructure.Commons;
+using Hans.Angular2Identity.Infrastructure.Repositories;
 
 namespace Hans.Angular2Identity.Controllers
 {
@@ -20,18 +21,18 @@ namespace Hans.Angular2Identity.Controllers
         private readonly UserManager<ApplicationUser> UserManager;
         private readonly SignInManager<ApplicationUser> SignInManager;
         private readonly IEmailSender EmailSender;
-        private readonly ILogger Logger;
+        private readonly IRepository<Logging> LoggingRepository;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILoggerFactory loggerFactory)
+            IRepository<Logging> loggingRepository)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             EmailSender = emailSender;
-            Logger = loggerFactory.CreateLogger<AccountController>();
+            LoggingRepository = loggingRepository;
         }
 
         [HttpPost("login")]
@@ -67,8 +68,8 @@ namespace Hans.Angular2Identity.Controllers
             {
                 loginResult = new GenericResult() { Succeeded = false, Message = ex.Message };
 
-                //_loggingRepository.Add(new Error() { Message = ex.Message, StackTrace = ex.StackTrace, DateCreated = DateTime.Now });
-                //_loggingRepository.Commit();
+                LoggingRepository.Add(new Logging() { Message = ex.Message, StackTrace = ex.StackTrace, DateCreated = DateTime.Now });
+                LoggingRepository.Commit();
             }
 
             return new ObjectResult(loginResult);

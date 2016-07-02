@@ -13,6 +13,7 @@ using Hans.Angular2Identity.Infrastructure.Domains;
 using Hans.Angular2Identity.Infrastructure;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Hans.Angular2Identity.Infrastructure.Repositories;
 
 namespace Hans.Angular2Identity
 {
@@ -47,6 +48,8 @@ namespace Hans.Angular2Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IRepository<Logging>, Repository<Logging>>();
 
             services.AddMvc();
 

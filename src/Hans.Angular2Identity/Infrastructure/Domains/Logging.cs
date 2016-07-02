@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hans.Angular2Identity.Infrastructure.Domains
 {
-    public class Logging
+    public class Logging : IBaseDomain
     {
         public int Id { get; set; }
         public string Message { get; set; }

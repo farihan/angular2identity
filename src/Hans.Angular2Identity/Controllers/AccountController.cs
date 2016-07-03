@@ -38,41 +38,100 @@ namespace Hans.Angular2Identity.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel user)
         {
-            GenericResult loginResult = null;
+            GenericResult actionResult = null;
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var login = await SignInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: false);
+                    var result = await SignInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: false);
 
-                    if (login.Succeeded)
+                    if (result.Succeeded)
                     {
-                        loginResult = new GenericResult() { Succeeded = true, Message = ResultType.LoginSucceed };
+                        actionResult = new GenericResult() { Succeeded = true, Message = ResultType.LoginSucceed };
                     }
-                    if (login.IsLockedOut)
+                    if (result.IsLockedOut)
                     {
-                        loginResult = new GenericResult() { Succeeded = false, Message = ResultType.LoginAccountLockedOut };
+                        actionResult = new GenericResult() { Succeeded = false, Message = ResultType.LoginAccountLockedOut };
                     }
                     else
                     {
-                        loginResult = new GenericResult() { Succeeded = false, Message = ResultType.LoginFailed };
+                        actionResult = new GenericResult() { Succeeded = false, Message = ResultType.LoginFailed };
                     }
                 }
                 else
                 {
-                    loginResult = new GenericResult() { Succeeded = false, Message = ResultType.InvalidLoginAttempt };
+                    actionResult = new GenericResult() { Succeeded = false, Message = ResultType.InvalidLoginAttempt };
                 }
             }
             catch (Exception ex)
             {
-                loginResult = new GenericResult() { Succeeded = false, Message = ex.Message };
+                actionResult = new GenericResult() { Succeeded = false, Message = ex.Message };
 
                 LoggingRepository.Add(new Logging() { Message = ex.Message, StackTrace = ex.StackTrace, DateCreated = DateTime.Now });
                 LoggingRepository.Commit();
             }
 
-            return new ObjectResult(loginResult);
+            return new ObjectResult(actionResult);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                await SignInManager.SignOutAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                LoggingRepository.Add(new Logging() { Message = ex.Message, StackTrace = ex.StackTrace, DateCreated = DateTime.Now });
+                LoggingRepository.Commit();
+
+                return BadRequest();
+            }
+        }
+
+        [Route("register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        {
+            GenericResult actionResult = null;
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                    var result = await UserManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        // Send an email with this link
+                        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                        //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                        //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                        await SignInManager.SignInAsync(user, isPersistent: false);
+
+                        actionResult = new GenericResult() { Succeeded = true, Message = ResultType.RegistrationSucceeded };
+                    }
+                }
+                else
+                {
+                    actionResult = new GenericResult() { Succeeded = false, Message = ResultType.InvalidLoginAttempt };
+                }
+            }
+            catch (Exception ex)
+            {
+                actionResult = new GenericResult() { Succeeded = false, Message = ex.Message };
+
+                LoggingRepository.Add(new Logging() { Message = ex.Message, StackTrace = ex.StackTrace, DateCreated = DateTime.Now });
+                LoggingRepository.Commit();
+            }
+
+            return new ObjectResult(actionResult);
         }
     }
 }

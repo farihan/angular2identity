@@ -11,5 +11,7 @@ namespace Hans.Angular2Identity.Infrastructure.Commons
         public const string LoginFailed = "Login failed";
         public const string LoginAccountLockedOut = "Login account locked out";
         public const string InvalidLoginAttempt = "Invalid login attempt";
+        public const string InvalidLoginField = "Invalid login field"; 
+        public const string RegistrationSucceeded = "Registration succeeded";
     }
 }
